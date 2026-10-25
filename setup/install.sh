@@ -2,8 +2,8 @@
 
 set -eu
 
-LINUX_INSTALL_DIR="$HOME/.local/share/YieldRevealed"
-MACOS_INSTALL_DIR="$HOME/Applications/YieldRevealed"
+LINUX_INSTALL_DIR="$HOME/.local/share/Yield Revealed"
+MACOS_INSTALL_DIR="$HOME/Applications/Yield Revealed"
 
 
 banner() {                                              
@@ -56,58 +56,47 @@ esac
 banner
 
 
-if ! command -v git >/dev/null 2>&1; then
-    error "Git is not installed."
-fi
-
-if ! command -v node >/dev/null 2>&1 || ! command -v npm >/dev/null; then
-    error "Node.js is not installed."
-fi
-
-if ! command -v python3 >/dev/null 2>&1; then
-    error "Python 3 is not installed."
+if [ -e "$INSTALL_DIR" ]; then error "Installation directory already exists. You may run unins.sh from github.com/codelao/YieldRevealed/releases to uninstall the app."
 fi
 
 
-if [ -e "$INSTALL_DIR" ]; then
-    error "Installation directory already exists. You may run unins.sh from github.com/codelao/YieldRevealed/releases in order to uninstall the app."
+info "Verifying dependencies..."
+
+if ! command -v git >/dev/null 2>&1; then error "Git is not installed or not working properly."
 fi
 
-info "Successfully verified all dependencies."
+if ! command -v node >/dev/null 2>&1 || ! command -v npm >/dev/null 2>&1; then error "Node.js / npm is not installed or not working properly."
+fi
+
+if ! command -v python >/dev/null 2>&1; then error "Python 3 is not installed or not working properly."
+fi
 
 
 info "Cloning project repository..."
 
-git clone https://github.com/codelao/YieldRevealed.git "$INSTALL_DIR"
+if ! git clone https://github.com/codelao/Yield-Revealed.git "$INSTALL_DIR" >/dev/null 2>&1; then error "Failed to clone repository."
+fi
 cd "$INSTALL_DIR"
-
-
-info "Removing unnecessary files..."
-
-rm -rf "setup"
-rm -rf "tests"
-rm -f "README.md"
-rm -f ".gitignore"
-rm -f "bin/YieldRevealed.cmd"
 
 
 info "Creating Python virtual environment..."
 
-python3 -m venv .venv
-if [ ! -f ".venv/bin/python" ]; then
-    error "Failed to create Python virtual environment."
+python -m venv .venv >/dev/null 2>&1
+if [ ! -f ".venv/bin/python" ]; then error "Failed to create Python virtual environment."
 fi
 
 
 info "Installing Python dependencies..."
 
-.venv/bin/python -m pip install --upgrade pip
-.venv/bin/python -m pip install -r requirements.txt
+if ! .venv/bin/python -m pip install --upgrade pip >/dev/null 2>&1 || ! .venv/bin/python -m pip install -r requirements.txt >/dev/null 2>&1; then
+    error "Failed to install Python dependencies."
+fi
 
 
 info "Installing Node.js dependencies..."
 
-npm ci
+if ! npm ci >/dev/null 2>&1; then error "Failed to install Node.js dependencies."
+fi
 
 
 info "Installing launcher..."
@@ -115,9 +104,18 @@ info "Installing launcher..."
 touch YieldRevealed.sh
 echo -e "#!/usr/bin/env bash\n\nAppDir=\"$INSTALL_DIR\"\ncd \"\$AppDir\"\nexec node server.js" > YieldRevealed.sh
 if ! sudo install -m 755 "$INSTALL_DIR/YieldRevealed.sh" /usr/local/bin/YieldRevealed; then
-    error "Unable to install the launcher. Please, check your system rights and try installation again."
+    error "Unable to install the launcher. Please, check your system rights and try again."
 fi
-rm -f YieldRevealed.sh
+
+
+info "Cleaning up..."
+
+rm -rf "setup"
+rm -rf "tests"
+rm -f "README.md"
+rm -f ".gitignore"
+rm -f "bin/YieldRevealed.cmd"
+rm -f "YieldRevealed.sh"
 
 
 success
