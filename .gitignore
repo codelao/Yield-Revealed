@@ -1,6 +1,9 @@
 **/__pycache__
 **/*.pytest_cache
 
+setup/Output
+setup/*.txt
+setup/*.bmp
 
 public/test.html
 node_modules

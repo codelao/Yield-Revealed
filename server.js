@@ -58,6 +58,6 @@ app.post("/api/predict", (req, res) => {
 
 
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Server is up on http://localhost:${PORT}`);
 });
