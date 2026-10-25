@@ -1,6 +1,6 @@
 const path = require("path");
 const express = require("express");
-const { exec } = require("child_process");
+const { spawn } = require("child_process");
 const messages = require('./messages.json');
 
 const app = express();
@@ -24,7 +24,7 @@ app.post("/api/predict", (req, res) => {
   }
 
   const args = ["-m", "src.run", state, crop, String(year), String(annualRainfall), String(monsoonRainfall), String(previousYearYield)];
-  const child = exec(PYTHON_BIN, args, { cwd: __dirname });
+  const child = spawn(PYTHON_BIN, args, { cwd: __dirname });
   //console.debug("Starting", PYTHON_BIN, "with", args)
 
   let stdout = "";
