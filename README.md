@@ -17,6 +17,7 @@
 - [Getting started](https://github.com/codelao/Yield-Revealed/wiki/Getting-started)
   - [Usage](https://github.com/codelao/Yield-Revealed/wiki/Getting-started#usage)
   - [Understanding the results](https://github.com/codelao/Yield-Revealed/wiki/Getting-started#understanding-the-results)
+  - [Issues](https://github.com/codelao/Yield-Revealed/wiki/Getting-started#issues)
 - [Installation](https://github.com/codelao/Yield-Revealed/wiki/Installation)
   - [Windows](https://github.com/codelao/Yield-Revealed/wiki/Installation#windows)
   - [Linux/macOS](https://github.com/codelao/Yield-Revealed/wiki/Installation#linuxmacos)
