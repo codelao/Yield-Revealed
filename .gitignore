@@ -3,7 +3,6 @@
 
 setup/Output
 setup/*.txt
-setup/*.bmp
 
 public/test.html
 node_modules
