@@ -56,7 +56,7 @@ esac
 banner
 
 
-if [ -e "$INSTALL_DIR" ]; then error "Installation directory already exists. You may run unins.sh from github.com/codelao/YieldRevealed/releases to uninstall the app."
+if [ -e "$INSTALL_DIR" ]; then error "Installation directory already exists. Run unins.sh to uninstall the app."
 fi
 
 
@@ -68,7 +68,11 @@ fi
 if ! command -v node >/dev/null 2>&1 || ! command -v npm >/dev/null 2>&1; then error "Node.js / npm is not installed or not working properly."
 fi
 
-if ! command -v python >/dev/null 2>&1; then error "Python 3 is not installed or not working properly."
+if ! command -v python >/dev/null 2>&1; then
+    if ! command -v python3 >/dev/null 2>&1; then error "Python is not installed or not working properly."
+    else pbin="python3"
+    fi
+else pbin="python"
 fi
 
 
@@ -81,14 +85,14 @@ cd "$INSTALL_DIR"
 
 info "Creating Python virtual environment..."
 
-python -m venv .venv >/dev/null 2>&1
+$pbin -m venv .venv >/dev/null 2>&1
 if [ ! -f ".venv/bin/python" ]; then error "Failed to create Python virtual environment."
 fi
 
 
 info "Installing Python dependencies..."
 
-if ! .venv/bin/python -m pip install --upgrade pip >/dev/null 2>&1 || ! .venv/bin/python -m pip install -r requirements.txt >/dev/null 2>&1; then
+if ! .venv/bin/$pbin -m pip install --upgrade pip >/dev/null 2>&1 || ! .venv/bin/$pbin -m pip install -r requirements.txt >/dev/null 2>&1; then
     error "Failed to install Python dependencies."
 fi
 
@@ -101,20 +105,29 @@ fi
 
 info "Installing launcher..."
 
-touch YieldRevealed.sh
-echo -e "#!/usr/bin/env bash\n\nAppDir=\"$INSTALL_DIR\"\ncd \"\$AppDir\"\nexec node server.js" > YieldRevealed.sh
-if ! sudo install -m 755 "$INSTALL_DIR/YieldRevealed.sh" /usr/local/bin/YieldRevealed; then
+touch bin/YieldRevealed.sh
+cat > bin/YieldRevealed.sh <<EOF
+#!/usr/bin/env bash
+
+AppDir="$INSTALL_DIR"
+cd "\$AppDir"
+export PYTHON_BIN="\$AppDir/.venv/bin/python"
+
+exec node server.js
+EOF
+if ! sudo install -m 755 "$INSTALL_DIR/bin/YieldRevealed.sh" /usr/local/bin/YieldRevealed; then
     error "Unable to install the launcher. Please, check your system rights and try again."
 fi
 
 
 info "Cleaning up..."
 
+mv "setup/unins.sh" .
 rm -rf "setup"
 rm -rf "tests"
+rm -rf "bin"
 rm -f "README.md"
 rm -f ".gitignore"
-rm -f "bin/YieldRevealed.cmd"
 rm -f "YieldRevealed.sh"
 
 

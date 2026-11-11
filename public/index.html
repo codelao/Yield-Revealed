@@ -482,11 +482,220 @@
   @media (prefers-reduced-motion: reduce){
     *{ animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
   }
+
+  .menu-btn{
+    position:fixed;
+    top:16px; left:16px;
+    width:48px; height:48px;
+    padding:0;
+    margin:0;
+    background:transparent;
+    border:1px solid transparent;
+    border-radius:6px;
+    cursor:pointer;
+    z-index:30;
+    transition:border-color 0.15s ease, background 0.2s ease;
+  }
+
+  .menu-btn:hover{ border-color:var(--text-muted); }
+  .menu-btn:focus-visible{ outline:none; border-color:var(--accent); }
+
+  .menu-btn.active{
+    background:var(--accent);
+    border-color:var(--accent);
+  }
+
+  .menu-btn .icon{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+    pointer-events:none;
+    transition:opacity 0.15s ease;
+  }
+
+  .menu-btn .icon-active{ opacity:0; }
+  .menu-btn.active .icon-default{ opacity:0; }
+  .menu-btn.active .icon-active{ opacity:1; }
+
+  .panel-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(8,18,10,0.55);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.35s ease;
+    z-index:15;
+  }
+
+  .panel-overlay.visible{
+    opacity:1;
+    pointer-events:auto;
+  }
+
+  .side-panel{
+    position:fixed;
+    top:0; left:0;
+    width:min(280px, 82vw);
+    height:100vh;
+    height:100dvh;
+    background:var(--surface);
+    border-right:1px solid var(--border);
+    padding:88px 16px 24px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    transform:translateX(-100%);
+    visibility:hidden;
+    transition:transform 0.35s cubic-bezier(0.65,0,0.35,1), visibility 0s linear 0.35s;
+    z-index:20;
+  }
+
+  .side-panel.open{
+    transform:translateX(0);
+    visibility:visible;
+    box-shadow:0 0 40px rgba(0,0,0,0.35);
+    transition:transform 0.35s cubic-bezier(0.65,0,0.35,1), visibility 0s linear 0s;
+  }
+
+  .side-panel-title{
+    font-family:var(--font-display);
+    font-size:12px;
+    font-weight:500;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--text-muted);
+    margin:0 0 8px 8px;
+  }
+
+  .nav-item{
+    width:100%;
+    text-align:left;
+    background:transparent;
+    border:1px solid transparent;
+    border-radius:var(--radius-sm);
+    padding:12px 16px;
+    color:var(--text-secondary);
+    font-family:var(--font-display);
+    font-size:15px;
+    font-weight:500;
+    cursor:pointer;
+    transition:background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .nav-item:hover{
+    background:var(--surface-raised);
+    color:var(--text-primary);
+  }
+
+  .nav-item:focus-visible{ outline:none; border-color:var(--accent); }
+
+  .nav-item.active{
+    background:var(--surface-raised);
+    border-color:var(--border);
+    color:var(--accent);
+  }
+
+  .view{
+    display:none;
+    width:100%;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  .view.active{ display:flex; }
+
+  .wiki-contents{
+    position:relative;
+    z-index:1;
+    width:100%;
+    max-width:560px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:36px;
+  }
+
+  .wiki-contents h2{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:20px;
+    margin:0 0 12px;
+  }
+
+  .wiki-contents p{
+    font-size:15px;
+    line-height:1.7;
+    color:var(--text-secondary);
+    margin:0 0 16px;
+  }
+
+  .wiki-contents p:last-child{ margin-bottom:0; }
+
+  .wiki-contents h2.toc-title{ margin-top:28px; }
+
+  .guide-toc,
+  .guide-toc ul{
+    list-style:none;
+    margin:0;
+    padding:0;
+  }
+
+  .guide-toc ul{
+    margin:2px 0 4px 6px;
+    padding-left:14px;
+    border-left:1px solid var(--border-soft);
+  }
+
+  .guide-toc li{ margin:0; }
+
+  .guide-toc > li{ margin-top:10px; }
+  .guide-toc > li:first-child{ margin-top:0; }
+
+  .guide-toc a{
+    display:inline-block;
+    padding:4px 0;
+    font-size:14.5px;
+    line-height:1.5;
+    color:var(--text-secondary);
+    text-decoration:none;
+    transition:color 0.15s ease;
+  }
+
+  .guide-toc > li > a{
+    font-family:var(--font-display);
+    font-weight:500;
+    font-size:15px;
+    color:var(--text-primary);
+  }
+
+  .guide-toc a:hover{ color:var(--accent); }
+  .guide-toc a:focus-visible{ outline:none; color:var(--accent); text-decoration:underline; }
+
+  @media (max-width:480px){
+    .wiki-contents{ padding:28px 22px; }
+  }
 </style>
 </head>
 <body>
 
 <canvas id="rain-canvas" aria-hidden="true"></canvas>
+
+<button class="menu-btn" id="menu-btn" type="button" aria-label="Toggle menu" aria-controls="side-panel" aria-expanded="false">
+  <img class="icon icon-default" src="panel.png" alt="">
+  <img class="icon icon-active" src="panel-click.png" alt="">
+</button>
+
+<div class="panel-overlay" id="panel-overlay"></div>
+
+<nav class="side-panel" id="side-panel" aria-label="Main navigation">
+  <p class="side-panel-title">Menu</p>
+  <button class="nav-item active" type="button" data-view="home">Home</button>
+  <button class="nav-item" type="button" data-view="guide">Guide</button>
+</nav>
+
+<main class="view active" id="view-home">
 
 <header>
   <h1>Yield Revealed</h1>
@@ -690,6 +899,49 @@
 <footer>
   by CodeLao<br><a href="https://github.com/codelao/Yield-Revealed">GitHub</a>
 </footer>
+
+</main>
+
+<section class="view" id="view-guide">
+  <header>
+    <h1><a href="https://github.com/codelao/Yield-Revealed/wiki">Yield Revealed wiki</a></h1>
+  </header>
+
+  <div class="wiki-contents">
+    <h2 class="toc-title">Contents</h2>
+    <ul class="guide-toc">
+      <li><a href="https://github.com/codelao/Yield-Revealed/wiki" target="_blank" rel="noopener">Home</a>
+        <ul>
+          <li><a href="https://github.com/codelao/Yield-Revealed/wiki#welcome-to-the-yield-revealed-wiki" target="_blank" rel="noopener">Welcome to the Yield Revealed wiki!</a>
+            <ul>
+              <li><a href="https://github.com/codelao/Yield-Revealed/wiki#description" target="_blank" rel="noopener">Description</a></li>
+              <li><a href="https://github.com/codelao/Yield-Revealed/wiki#general-info" target="_blank" rel="noopener">General Info</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><a href="https://github.com/codelao/Yield-Revealed/wiki/Getting-started" target="_blank" rel="noopener">Getting started</a>
+        <ul>
+          <li><a href="https://github.com/codelao/Yield-Revealed/wiki/Getting-started#usage" target="_blank" rel="noopener">Usage</a></li>
+          <li><a href="https://github.com/codelao/Yield-Revealed/wiki/Getting-started#understanding-the-results" target="_blank" rel="noopener">Understanding the results</a></li>
+        </ul>
+      </li>
+      <li><a href="https://github.com/codelao/Yield-Revealed/wiki/Installation" target="_blank" rel="noopener">Installation</a>
+        <ul>
+          <li><a href="https://github.com/codelao/Yield-Revealed/wiki/Installation#windows" target="_blank" rel="noopener">Windows</a></li>
+          <li><a href="https://github.com/codelao/Yield-Revealed/wiki/Installation#linuxmacos" target="_blank" rel="noopener">Linux/macOS</a></li>
+          <li><a href="https://github.com/codelao/Yield-Revealed/wiki/Installation#manual-installation" target="_blank" rel="noopener">Manual Installation</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+<footer>
+by CodeLao<br><a href="https://github.com/codelao/Yield-Revealed">GitHub</a>
+</footer>
+
+</section>
+
 
 <script>
 
@@ -1021,6 +1273,50 @@
     }
     requestAnimationFrame(frame);
   })();
+
+
+  var menuBtn = document.getElementById('menu-btn');
+  var sidePanel = document.getElementById('side-panel');
+  var panelOverlay = document.getElementById('panel-overlay');
+  var navItems = document.querySelectorAll('.nav-item');
+  var views = document.querySelectorAll('.view');
+
+  function setPanel(open){
+    sidePanel.classList.toggle('open', open);
+    panelOverlay.classList.toggle('visible', open);
+    menuBtn.classList.toggle('active', open);
+    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  function switchView(name){
+    Array.prototype.forEach.call(views, function(v){
+      v.classList.toggle('active', v.id === 'view-' + name);
+    });
+    Array.prototype.forEach.call(navItems, function(n){
+      var on = n.getAttribute('data-view') === name;
+      n.classList.toggle('active', on);
+      if (on){ n.setAttribute('aria-current', 'page'); }
+      else { n.removeAttribute('aria-current'); }
+    });
+    window.scrollTo(0, 0);
+  }
+
+  menuBtn.addEventListener('click', function(){
+    setPanel(!sidePanel.classList.contains('open'));
+  });
+
+  panelOverlay.addEventListener('click', function(){ setPanel(false); });
+
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') setPanel(false);
+  });
+
+  Array.prototype.forEach.call(navItems, function(item){
+    item.addEventListener('click', function(){
+      switchView(item.getAttribute('data-view'));
+      setPanel(false);
+    });
+  });
 
 </script>
 

@@ -1,6 +1,6 @@
 {
   "name": "Yield Revealed",
-  "version": "0.9.5-beta",
+  "version": "0.9.6-beta",
   "description": "Forecasts agricultural production standing based on historical rainfall levels",
   "main": "server.js",
   "scripts": {
