@@ -2,8 +2,8 @@
 
 set -eu
 
-LINUX_INSTALL_DIR="$HOME/.local/share/YieldRevealed"
-MACOS_INSTALL_DIR="$HOME/Applications/YieldRevealed"
+LINUX_INSTALL_DIR="$HOME/.local/share/Yield Revealed"
+MACOS_INSTALL_DIR="$HOME/Applications/Yield Revealed"
 
 
 error() {
