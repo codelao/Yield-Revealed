@@ -1,5 +1,5 @@
 #define MyAppName "Yield Revealed"
-#define MyAppVersion "0.9.5-beta"
+#define MyAppVersion "0.9.6-beta"
 #define MyAppPublisher "CodeLao"
 
 [Setup]
